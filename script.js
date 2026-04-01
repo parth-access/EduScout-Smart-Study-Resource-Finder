@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyB380wSq3__2GefGhoVmcbyrJs5tnnT3TI";
+const API_KEY = "AIzaSyAh02FQb0AzW6x2V0C0G9i5C7SLszcGbm0";
 
 const resultsDiv = document.getElementById("results");
 const loader = document.getElementById("loader");
