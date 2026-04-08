@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <title>EduScout</title>
@@ -7,60 +7,16 @@
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="logo">🎓 EduScout</div>
-    <button onclick="location.reload()">Reset</button>
-  </nav>
-
   <main>
+    <section class="hero">
+      <h1>🎓 EduScout</h1>
+      <p>Find the best study videos based on your class, subject, and topic.</p>
 
-    <!-- FORM -->
-    <div id="formSection">
-      <h2>Find the best study videos</h2>
-
-      <select id="class">
-        <option value="">Select Class</option>
-        <option value="10">Class 10</option>
-        <option value="11">Class 11</option>
-        <option value="12">Class 12</option>
-      </select>
-
-      <select id="subject">
-        <option value="">Select Subject</option>
-        <option value="math">Math</option>
-        <option value="science">Science</option>
-      </select>
-
-      <select id="topic">
-        <option value="">Select Topic</option>
-      </select>
-
-      <button onclick="startSearch()">Start Learning</button>
-    </div>
-
-    <!-- MAIN -->
-    <div id="mainSection" style="display:none;">
-
-      <div class="top-bar">
-        <input type="text" id="searchInput" placeholder="Change topic...">
-        <button onclick="searchData()">Search</button>
-      </div>
-
-      <p id="heading"></p>
-
-      <div id="loader">Loading...</div>
-      <div id="results"></div>
-
-    </div>
-
+      <a href="app.html">
+        <button class="btn btn-primary">Start Learning</button>
+      </a>
+    </section>
   </main>
 
-  <!-- FOOTER -->
-  <footer>
-    Made by Parth • EduScout © 2026
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>

@@ -1,100 +1,78 @@
-const API_KEY = "AIzaSyAh02FQb0AzW6x2V0C0G9i5C7SLszcGbm0";
-
-const resultsDiv = document.getElementById("results");
-const loader = document.getElementById("loader");
-const heading = document.getElementById("heading");
-
-let currentSubject = "";
-
-/* TOPICS */
 const topics = {
-  math: ["Algebra", "Calculus", "Trigonometry"],
-  science: ["Physics", "Chemistry", "Biology"]
+  math: ["Algebra", "Trigonometry"],
+  science: ["Physics", "Chemistry"]
 };
 
-const subjectDropdown = document.getElementById("subject");
-const topicDropdown = document.getElementById("topic");
+let videos = [];
 
-subjectDropdown.addEventListener("change", () => {
-  const selected = subjectDropdown.value;
+// Topic change
+document.getElementById("subjectSelect")?.addEventListener("change", function () {
+  const subject = this.value;
+  const topicSelect = document.getElementById("topicSelect");
 
-  topicDropdown.innerHTML = '<option value="">Select Topic</option>';
+  topicSelect.innerHTML = '<option value="">Select Topic</option>';
 
-  topics[selected]?.forEach(topic => {
-    const option = document.createElement("option");
-    option.value = topic;
-    option.textContent = topic;
-    topicDropdown.appendChild(option);
+  (topics[subject] || []).forEach(t => {
+    topicSelect.innerHTML += `<option>${t}</option>`;
   });
 });
 
-/* START */
-function startSearch() {
-  const userClass = document.getElementById("class").value;
-  const subject = document.getElementById("subject").value;
-  const topic = document.getElementById("topic").value;
+// Fetch videos
+document.getElementById("searchBtn")?.addEventListener("click", () => {
+  const cls = document.getElementById("classSelect").value;
+  const subject = document.getElementById("subjectSelect").value;
+  const topic = document.getElementById("topicSelect").value;
 
-  if (!userClass || !subject || !topic) {
-    alert("Please select all fields");
-    return;
-  }
+  const query = `class ${cls} ${subject} ${topic} ncert`;
 
-  currentSubject = topic;
+  fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=10&key=AIzaSyAh02FQb0AzW6x2V0C0G9i5C7SLszcGbm0`)
+    .then(res => res.json())
+    .then(data => {
+      videos = data.items || [];
+      showVideos(videos);
+    });
+});
 
-  document.getElementById("formSection").style.display = "none";
-  document.getElementById("mainSection").style.display = "block";
+// Show videos
+function showVideos(list) {
+  const container = document.getElementById("videos");
+  container.innerHTML = "";
 
-  heading.innerText = `Showing results for ${topic} (Class ${userClass})`;
-
-  searchData();
-}
-
-/* FETCH */
-async function searchData() {
-  const input = document.getElementById("searchInput").value;
-  const query = input || currentSubject;
-
-  currentSubject = query;
-
-  heading.innerText = `Showing results for ${query}`;
-
-  loader.style.display = "block";
-  resultsDiv.innerHTML = "";
-
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&maxResults=6&key=${API_KEY}`
-    );
-
-    const data = await res.json();
-    displayData(data);
-
-  } catch (error) {
-    resultsDiv.innerHTML = "<p>Error loading videos</p>";
-  }
-
-  loader.style.display = "none";
-}
-
-/* DISPLAY */
-function displayData(data) {
-  resultsDiv.innerHTML = data.items
-    .filter(item => item.id.videoId)
-    .map(item => {
-      const videoId = item.id.videoId;
-      const title = item.snippet.title;
-      const thumbnail = item.snippet.thumbnails.medium.url;
-
-      return `
-        <div class="card">
-          <img src="${thumbnail}">
-          <div class="card-content">
-            <h3>${title}</h3>
-            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank">
-              ▶ Watch Video
-            </a>
-          </div>
+  list.map(v => {
+    container.innerHTML += `
+      <div class="video-card">
+        <img src="${v.snippet.thumbnails.medium.url}">
+        <div class="video-info">
+          <h3>${v.snippet.title}</h3>
+          <a class="video-link" href="https://youtube.com/watch?v=${v.id.videoId}" target="_blank">
+            Watch Video →
+          </a>
         </div>
-      `;
-    }).join("");
+      </div>
+    `;
+  });
 }
+
+// Search filter
+document.getElementById("searchInput")?.addEventListener("input", function () {
+  const text = this.value.toLowerCase();
+
+  showVideos(
+    videos.filter(v => v.snippet.title.toLowerCase().includes(text))
+  );
+});
+
+// Sort
+document.getElementById("sortBtn")?.addEventListener("click", () => {
+  videos.sort((a, b) => a.snippet.title.localeCompare(b.snippet.title));
+  showVideos(videos);
+});
+
+// Theme toggle (simplified)
+document.getElementById("themeToggle")?.addEventListener("click", () => {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+});
+
+// Reset
+document.getElementById("resetBtn")?.addEventListener("click", () => location.reload());
