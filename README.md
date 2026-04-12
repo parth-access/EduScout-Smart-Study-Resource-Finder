@@ -35,3 +35,6 @@ This project uses the **YouTube Data API v3** to fetch real-time educational vid
 This project is currently in the initial planning phase. Features mentioned above will be implemented in upcoming milestones.
 
 Public API key was dead, so used youtube's api key, finding a workaround for it.
+
+
+Deployment link - https://eduscout.netlify.app/
